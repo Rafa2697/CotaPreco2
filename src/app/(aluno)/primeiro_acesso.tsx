@@ -37,7 +37,8 @@ export default function Primeiro_acesso() {
         '0390066': true,
         '0395507': true,
         '0394723': true,
-        '0390364': true
+        '0390364': true,
+        '0387673': true
     };
 
     // Função para validar se o RA está autorizado
