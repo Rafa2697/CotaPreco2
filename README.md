@@ -9,7 +9,7 @@ O objetivo da criação do aplicativo é proporcionar aos usuários facilidade e
 Clone o projeto
 
 ```bash
-  https://github.com/Rafa2697/cotaPreco
+  https://github.com/Rafa2697/CotaPreco2
 ```
 
 Entre no diretório do projeto
