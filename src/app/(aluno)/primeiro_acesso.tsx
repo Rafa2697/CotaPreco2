@@ -34,10 +34,10 @@ export default function Primeiro_acesso() {
     // Lista de RAs autorizados
     const rasAutorizados:{[key: string]: boolean} = {
         '0381424': true,
-        '234567': true,
-        '345678': true,
-        '456789': true,
-        '567890': true
+        '0390066': true,
+        '0395507': true,
+        '0394723': true,
+        '0390364': true
     };
 
     // Função para validar se o RA está autorizado
