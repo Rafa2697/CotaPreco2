@@ -1,5 +1,5 @@
 
-# Cota Preço(versão com TypeScrip e Expo-Router
+# Cota Preço(versão com TypeScript e Expo-Router
 
 O objetivo da criação do aplicativo é proporcionar aos usuários facilidade e praticidade em consultar os preços e serviços dos produtos, fazendo uma comparação e cotação dos produtos, sem sair de casa. 
 
@@ -33,7 +33,7 @@ Inicie o servidor
 
 ## Stack utilizada
 
-**Front-end:** React-Native, Expo, React-navigation
+**Front-end:** React-Native, Expo
 
 **Back-end:** Node, axios, Expo
 
