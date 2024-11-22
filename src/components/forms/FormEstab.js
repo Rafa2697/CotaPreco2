@@ -1,17 +1,21 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
-import { Dropdown } from 'react-native-element-dropdown'; 
+import { Dropdown } from 'react-native-element-dropdown';
 import React, { useState, useEffect } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function FormEstab({ closeModal }) {
     const [isFocusCidade, setIsFocusCidade] = useState(false);
+    const [isFocusCategoria, setIsFocusCategoria] = useState(false);
     const [dadosCidades, setDadosCidades] = useState([]);
     const [valueCidade, setValueCidade] = useState(null);
+    const [dadosCategoria, setDadosCategoria] = useState([]);
+    const [valueCategoria, setValueCategoria] = useState(null);
     const [formData, setFormData] = useState({
         nome: '',
         cidade: '',
         endereco: ''
     });
+
     useEffect(() => {
 
         // Busca as cidades
@@ -23,6 +27,21 @@ export default function FormEstab({ closeModal }) {
                     valueIdCidade: item._id // '_id' de cada cidade
                 }));
                 setDadosCidades(formattedData);
+
+            })
+            .catch(error => console.error(error));
+    }, []);
+    useEffect(() => {
+
+        // Busca as categorias
+        fetch('https://api-cotapreco.onrender.com/category')
+            .then(response => response.json())
+            .then(data => {
+                const formattedData = data.map(item => ({
+                    label: item.nome, // campo 'nome' de cada categoria
+                    valueIdCategoria: item._id // '_id' de cada categoria
+                }));
+                setDadosCategoria(formattedData);
 
             })
             .catch(error => console.error(error));
@@ -52,19 +71,54 @@ export default function FormEstab({ closeModal }) {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Cadastrar Estabelecimento</Text>
-            
-            <TextInput 
+
+            <TextInput
                 style={styles.input}
                 placeholder="Nome do estabelecimento"
                 value={formData.nome}
                 onChangeText={(text) => setFormData({ ...formData, nome: text })}
             />
-            <TextInput 
+            <TextInput
                 style={styles.input}
                 placeholder="Logradouro"
                 value={formData.endereco}
                 onChangeText={(text) => setFormData({ ...formData, endereco: text })}
             />
+
+            <View style={styles.containerDropdown}>
+                <Dropdown
+                    style={[styles.dropdown, isFocusCategoria && { borderColor: 'blue' }]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={dadosCategoria}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="valueIdCategoria"
+                    value={valueCategoria}
+                    placeholder={!isFocusCategoria ? 'Selecionar Categoria' : '...'}
+                    searchPlaceholder="Search..."
+                    onFocus={() => setIsFocusCategoria(true)}
+                    onBlur={() => setIsFocusCategoria(false)}
+                    onChange={item => {
+                        setValueCategoria(item.valueIdCategoria);
+                        setFormData({ ...formData, categoria: item.valueIdCategoria });
+                        setIsFocusCategoria(true);
+                    }}
+
+                    renderLeftIcon={() => (
+                        <AntDesign
+                            style={styles.icon}
+                            color={isFocusCategoria ? 'blue' : 'black'}
+                            name="Safety"
+                            size={20}
+                        />
+                    )}
+                />
+            </View>
+
             <View style={styles.containerDropdown}>
                 <Dropdown
                     style={[styles.dropdown, isFocusCidade && { borderColor: 'blue' }]}
@@ -98,17 +152,17 @@ export default function FormEstab({ closeModal }) {
                     )}
                 />
             </View>
-           
+
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={[styles.button, styles.submitButton]}
                     onPress={handlePostEstab}
                 >
                     <Text style={styles.buttonText}>Cadastrar</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={[styles.button, styles.cancelButton]}
                     onPress={closeModal}
                 >
@@ -125,8 +179,8 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: 'white'
     },
-    containerDropdown:{
-        flex: 1,
+    containerDropdown: {
+        marginBottom: 15
     },
     title: {
         fontSize: 24,
@@ -169,7 +223,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderRadius: 8,
         paddingHorizontal: 8,
-        width:'100%',
+        width: '100%',
     },
     placeholderStyle: {
         fontSize: 16,
