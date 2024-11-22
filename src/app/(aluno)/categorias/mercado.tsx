@@ -14,6 +14,12 @@ interface EstabelecimentoItem {
     ValueId2Cidade: string;
 }
 
+interface CategoriaItem {
+    label: string;
+    value: string;
+    
+}
+
 interface ProdutoItem {
     label: string;
     value: string;
@@ -24,13 +30,16 @@ export default function CategoriaMercado() {
     const [valueCidade, setValueCidade] = useState<string | null>(null);
     const [valueProduto, setValueProduto] = useState<string | null>(null);
     const [valueEstab, setValueEstab] = useState<string | null>(null);
+    const [valueCategoria, setValueCategoria] = useState<string | null>(null);
 
     const [isFocusProduto, setIsFocusProduto] = useState(false);
     const [isFocusCidade, setIsFocusCidade] = useState(false);
     const [isFocusEstab, setIsFocusEstab] = useState(false);
+    const [isFocusCategoria, setIsFocusCategoria] = useState(false);
     const [dadosProdutos, setDadosProdutos] = useState<ProdutoItem[]>([]);
     const [dadosCidades, setDadosCidades] = useState<DropdownItem[]>([]);
     const [dadosEstab, setDadosEstab] = useState<EstabelecimentoItem[]>([]);
+    const [dadosCategoria, setDadosCategoria] = useState<CategoriaItem[]>([]);
     // const [estabFiltrados, setEstabFiltrados] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
@@ -54,7 +63,18 @@ export default function CategoriaMercado() {
 
             })
             .catch(error => console.error(error));
-
+        //busca de categorias
+        fetch('https://api-cotapreco.onrender.com/category')
+            .then(response => response.json())
+            .then((data: {nome: string, _id: string}[]) => {
+                const formattedData = data.map(item => ({
+                    label: item.nome,
+                    value: item._id
+                }));
+                setDadosCategoria(formattedData);
+            })
+            .catch(error => console.error(error));
+        //busca de estabelecimentos
         fetch('https://api-cotapreco.onrender.com/establishments')
             .then(response => response.json())
             .then((data: {nome: string, _id: string, cidade: string}[]) => {
@@ -117,6 +137,15 @@ export default function CategoriaMercado() {
         }
         return null;
     };
+    const renderLabelCategoria = () => {
+        if (valueCategoria || isFocusCategoria) {
+            return (
+                <Text style={[styles.label, isFocusCategoria && { color: 'blue' }]}>
+                    Selecione a Categoria
+                </Text>
+            )
+        }
+    }
 
     const getFilteredEstablishments = () => {
         if (!valueCidade) return [];
@@ -185,6 +214,39 @@ export default function CategoriaMercado() {
                         <AntDesign
                             style={styles.icon}
                             color={isFocusCidade ? 'blue' : 'black'}
+                            name="Safety"
+                            size={20}
+                        />
+                    )}
+                />
+            </View>
+            <View style={styles.container}>
+                {renderLabelCategoria()}
+                <Dropdown
+                    style={[styles.dropdown, isFocusCategoria && { borderColor: 'blue' }]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={dadosCategoria}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder={!isFocusCategoria ? 'Selecionar Categoria' : '...'}
+                    searchPlaceholder="Search..."
+                    value={valueCategoria}
+                    onFocus={() => setIsFocusCategoria(true)}
+                    onBlur={() => setIsFocusCategoria(false)}
+                    onChange={item => {
+                        setValueCategoria(item.value);
+                        setIsFocusCategoria(true);
+                    }}
+
+                    renderLeftIcon={() => (
+                        <AntDesign
+                            style={styles.icon}
+                            color={isFocusCategoria ? 'blue' : 'black'}
                             name="Safety"
                             size={20}
                         />
