@@ -12,6 +12,7 @@ interface EstabelecimentoItem {
     label: string;
     value: string;
     ValueId2Cidade: string;
+    ValueId2Categoria: string;
 }
 
 interface CategoriaItem {
@@ -63,6 +64,7 @@ export default function CategoriaMercado() {
 
             })
             .catch(error => console.error(error));
+
         //busca de categorias
         fetch('https://api-cotapreco.onrender.com/category')
             .then(response => response.json())
@@ -74,6 +76,7 @@ export default function CategoriaMercado() {
                 setDadosCategoria(formattedData);
             })
             .catch(error => console.error(error));
+
         //busca de estabelecimentos
         fetch('https://api-cotapreco.onrender.com/establishments')
             .then(response => response.json())
@@ -81,7 +84,8 @@ export default function CategoriaMercado() {
                 const formattedData = data.map(item => ({
                     label: item.nome,
                     value: item._id,
-                    ValueId2Cidade: item.cidade
+                    ValueId2Cidade: item.cidade,
+                    ValueId2Categoria: item.categoria
                 }));
                 setDadosEstab(formattedData)
             })
@@ -148,8 +152,10 @@ export default function CategoriaMercado() {
     }
 
     const getFilteredEstablishments = () => {
-        if (!valueCidade) return [];
-        const filtered = dadosEstab.filter(estab => estab.ValueId2Cidade === valueCidade);
+        if (!valueCidade || !valueCategoria) return [];
+        const filtered = dadosEstab.filter(estab => estab.ValueId2Cidade === valueCidade && estab.ValueId2Categoria === valueCategoria);
+
+        
         return filtered;
     };
     const getFilteredProducts = () => {
