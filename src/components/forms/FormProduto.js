@@ -130,7 +130,7 @@ export default function FormProduto({ closeModal }) {
                     style={[styles.button, styles.cancelButton]}
                     onPress={closeModal}
                 >
-                    <Text style={styles.buttonText}>Cancelar</Text>
+                    <Text style={styles.buttonText}>Voltar</Text>
                 </TouchableOpacity>
             </View>
         </View>

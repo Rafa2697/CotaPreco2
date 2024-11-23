@@ -8,10 +8,7 @@ export default function LayoutAluno() {
                 <Stack.Screen name='login' options={{ title: "Logar" }} />
                 <Stack.Screen name='primeiro_acesso' options={{ title: "Faça seu cadastro" }} />
 
-                <Stack.Screen name='menuAluno' options={{ title: 'Menu Aluno' }}/>
-                <Stack.Screen name='categorias/index' options={{ title: 'Menu Produtos' }}/>
-                <Stack.Screen name='categorias/mercado' options={{ title: 'Mercado' }}/>
-
+                <Stack.Screen name='categorias/index' options={{ title: 'Atualizaço de produtos' }}/>
                 <Stack.Screen name="cadastros/index" options={{title: 'cadastro'}}/>
             </Stack>
         </>
