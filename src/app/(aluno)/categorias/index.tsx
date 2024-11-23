@@ -26,6 +26,8 @@ interface ProdutoItem {
     label: string;
     value: string;
     ValueId2Estab: string;
+    desc: string;
+    nome: string;
 }
 
 export default function Categorias() {
@@ -104,12 +106,14 @@ export default function Categorias() {
         //busca de produtos
         fetch('https://api-cotapreco.onrender.com/product')
             .then(response => response.json())
-            .then((data: { nome: string, _id: string, preco: number, estabelecimento: string }[]) => {
+            .then((data: { nome: string, _id: string, preco: number, estabelecimento: string, descricao:string }[]) => {
                 // Mapeia os dados para o formato esperado pelo Dropdown
                 const formattedData = data.map(item => ({
+                    nome: item.nome,
                     label: `${item.nome} - R$${item.preco ? item.preco.toFixed(2) : '0.00'}`, // Formata o nome e preço como label
                     value: item._id,
-                    ValueId2Estab: item.estabelecimento
+                    ValueId2Estab: item.estabelecimento,
+                    desc:item.descricao
                 }));
                 setDadosProdutos(formattedData);
             })
@@ -334,6 +338,14 @@ export default function Categorias() {
                         console.log('Selected product:', item);
                         setValueProduto(item.value);
                         setIsFocusProduto(false);
+                        const selectedProduct = dadosProdutos.find(produto => produto.value === item.value);
+                        if (selectedProduct) {
+                            setFormData({
+                                nome: selectedProduct.nome, // Nome
+                                preco: selectedProduct.label.split('R$')[1], // Preço formatado
+                                descricao: selectedProduct.desc || '' // Descrição
+                            });
+                        }
                     }}
                     renderLeftIcon={() => (
                         <AntDesign
@@ -366,7 +378,7 @@ export default function Categorias() {
                         onSubmitEditing={() => inputDescriRef.current?.focus()} />
                     <TextInput
                         style={styles.input}
-                        placeholder="Descrição"
+                       // placeholder="Descrição"
                         value={formData.descricao}
                         ref={inputDescriRef}
                         multiline
