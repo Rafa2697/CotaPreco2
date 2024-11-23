@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, Button, ScrollView } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
@@ -13,12 +13,13 @@ interface EstabelecimentoItem {
     value: string;
     ValueId2Cidade: string;
     ValueId2Categoria: string;
+
 }
 
 interface CategoriaItem {
     label: string;
     value: string;
-    
+
 }
 
 interface ProdutoItem {
@@ -41,7 +42,11 @@ export default function CategoriaMercado() {
     const [dadosCidades, setDadosCidades] = useState<DropdownItem[]>([]);
     const [dadosEstab, setDadosEstab] = useState<EstabelecimentoItem[]>([]);
     const [dadosCategoria, setDadosCategoria] = useState<CategoriaItem[]>([]);
-    // const [estabFiltrados, setEstabFiltrados] = useState([]);
+    
+    const inputNomeRef = useRef<TextInput>(null)
+    const inputPrecoRef = useRef<TextInput>(null)
+    const inputDescriRef = useRef<TextInput>(null)
+
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
         nome: '',
@@ -55,7 +60,7 @@ export default function CategoriaMercado() {
         // Busca as cidades
         fetch('https://api-cotapreco.onrender.com/cities')
             .then(response => response.json())
-            .then((data: {nome: string, _id: string}[]) => {
+            .then((data: { nome: string, _id: string }[]) => {
                 const formattedData = data.map(item => ({
                     label: item.nome, // campo 'nome' de cada cidade
                     value: item._id // '_id' de cada cidade
@@ -68,7 +73,7 @@ export default function CategoriaMercado() {
         //busca de categorias
         fetch('https://api-cotapreco.onrender.com/category')
             .then(response => response.json())
-            .then((data: {nome: string, _id: string}[]) => {
+            .then((data: { nome: string, _id: string }[]) => {
                 const formattedData = data.map(item => ({
                     label: item.nome,
                     value: item._id
@@ -80,7 +85,12 @@ export default function CategoriaMercado() {
         //busca de estabelecimentos
         fetch('https://api-cotapreco.onrender.com/establishments')
             .then(response => response.json())
-            .then((data: {nome: string, _id: string, cidade: string}[]) => {
+            .then((data: {
+                categoria: any,
+                nome: string,
+                _id: string,
+                cidade: string
+            }[]) => {
                 const formattedData = data.map(item => ({
                     label: item.nome,
                     value: item._id,
@@ -94,7 +104,7 @@ export default function CategoriaMercado() {
         //busca de produtos
         fetch('https://api-cotapreco.onrender.com/product')
             .then(response => response.json())
-            .then((data: {nome: string, _id:string, preco:number, estabelecimento: string}[]) => {
+            .then((data: { nome: string, _id: string, preco: number, estabelecimento: string }[]) => {
                 // Mapeia os dados para o formato esperado pelo Dropdown
                 const formattedData = data.map(item => ({
                     label: `${item.nome} - R$${item.preco ? item.preco.toFixed(2) : '0.00'}`, // Formata o nome e preço como label
@@ -155,7 +165,7 @@ export default function CategoriaMercado() {
         if (!valueCidade || !valueCategoria) return [];
         const filtered = dadosEstab.filter(estab => estab.ValueId2Cidade === valueCidade && estab.ValueId2Categoria === valueCategoria);
 
-        
+
         return filtered;
     };
     const getFilteredProducts = () => {
@@ -189,9 +199,14 @@ export default function CategoriaMercado() {
         }
     };
 
+    const handleChangePrice = (text: string) => { // Substituir vírgula por ponto 
+        const formattedText = text.replace(',', '.');
+        setFormData({ ...formData, preco: formattedText });
+    };
+
     return (
 
-        <View>
+        <ScrollView>
             <Text style={styles.title}>Selecione as opções abaixo</Text>
             <View style={styles.container}>
                 {renderLabelCidade()}
@@ -336,22 +351,28 @@ export default function CategoriaMercado() {
                     <TextInput
                         style={styles.input}
                         placeholder="Nome do produto"
+                        returnKeyType='next'
                         value={formData.nome}
                         onChangeText={(text) => setFormData({ ...formData, nome: text })}
-                    />
+                        onSubmitEditing={() => inputPrecoRef.current?.focus()} />
                     <TextInput
                         style={styles.input}
                         placeholder="Preço"
                         value={formData.preco}
                         keyboardType="numeric"
-                        onChangeText={(text) => setFormData({ ...formData, preco: text })}
-                    />
+                        ref={inputPrecoRef}
+                        returnKeyType='next'
+                        onChangeText={handleChangePrice}
+                        onSubmitEditing={() => inputDescriRef.current?.focus()} />
                     <TextInput
                         style={styles.input}
                         placeholder="Descrição"
                         value={formData.descricao}
+                        ref={inputDescriRef}
                         multiline
                         onChangeText={(text) => setFormData({ ...formData, descricao: text })}
+                        returnKeyType='done'
+                        onSubmitEditing={handleUpdateProduct}
                     />
                     <Button
                         title="Atualizar Produto"
@@ -359,7 +380,7 @@ export default function CategoriaMercado() {
                     />
                 </View>
             )}
-        </View>
+        </ScrollView>
 
 
 

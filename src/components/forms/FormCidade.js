@@ -1,11 +1,14 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState} from 'react';
 export default function FormCidade({ closeModal }) {
     const [formData, setFormData] = useState({
         nome: '',
         estado: '',
         pais: ''
     });
+
+    const inputEstadoRef = useRef(null)
+    const inputPaisRef = useRef(null)
 
     const handlePostCity = async () => {
         try {
@@ -37,6 +40,8 @@ export default function FormCidade({ closeModal }) {
                 placeholder="Nome da cidade"
                 value={formData.nome}
                 onChangeText={(text) => setFormData({ ...formData, nome: text })} // Atualiza o estado do nome
+                returnKeyType='next'
+                onSubmitEditing={() => inputEstadoRef.current?.focus()}
             />
             
             <TextInput 
@@ -44,6 +49,9 @@ export default function FormCidade({ closeModal }) {
                 placeholder="Estado"
                 value={formData.estado}
                 onChangeText={(text) => setFormData({ ...formData, estado: text })}
+                ref={inputEstadoRef}
+                returnKeyType='next'
+                onSubmitEditing={() => inputPaisRef.current?.focus()}
             />
 
             <TextInput
@@ -51,6 +59,9 @@ export default function FormCidade({ closeModal }) {
                 placeholder='Pais'
                 value={formData.pais}
                 onChangeText={(text) => setFormData({ ...formData, pais: text })}
+                ref={inputPaisRef}
+                returnKeyType='done'
+                onSubmitEditing={handlePostCity}
             />
 
             <View style={styles.buttonContainer}>

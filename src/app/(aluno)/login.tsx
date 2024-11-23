@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Pressable, ActivityIndicator } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -58,14 +58,14 @@ export default function Login() {
             </Text>
             <KeyboardAvoidingView style={styles.wraperInput}>
 
-                <TextInput 
-                style={styles.input} 
-                onChangeText={(text: string) => setRa(text)} 
-                value={ra} 
-                keyboardType='numeric' 
-                placeholder='RA'
-                returnKeyType='next'
-                onSubmitEditing={() => inputSenhaRef.current?.focus()} />
+                <TextInput
+                    style={styles.input}
+                    onChangeText={(text: string) => setRa(text)}
+                    value={ra}
+                    keyboardType='numeric'
+                    placeholder='RA'
+                    returnKeyType='next'
+                    onSubmitEditing={() => inputSenhaRef.current?.focus()} />
 
                 <View style={styles.containerInPass}>
                     <View style={styles.input}>

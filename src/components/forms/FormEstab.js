@@ -1,6 +1,6 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import { Dropdown } from 'react-native-element-dropdown';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function FormEstab({ closeModal }) {
@@ -16,6 +16,8 @@ export default function FormEstab({ closeModal }) {
         endereco: ''
     });
 
+    const inputRefEnd = useRef(null)
+
     useEffect(() => {
 
         // Busca as cidades
@@ -30,8 +32,6 @@ export default function FormEstab({ closeModal }) {
 
             })
             .catch(error => console.error(error));
-    }, []);
-    useEffect(() => {
 
         // Busca as categorias
         fetch('https://api-cotapreco.onrender.com/category')
@@ -77,12 +77,15 @@ export default function FormEstab({ closeModal }) {
                 placeholder="Nome do estabelecimento"
                 value={formData.nome}
                 onChangeText={(text) => setFormData({ ...formData, nome: text })}
+                returnKeyType='next'
+                onSubmitEditing={() => inputRefEnd.current?.focus()}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Logradouro"
                 value={formData.endereco}
                 onChangeText={(text) => setFormData({ ...formData, endereco: text })}
+                ref={inputRefEnd}
             />
 
             <View style={styles.containerDropdown}>

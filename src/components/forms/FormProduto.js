@@ -1,6 +1,6 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import { Dropdown } from 'react-native-element-dropdown';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function FormProduto({ closeModal }) {
@@ -14,6 +14,10 @@ export default function FormProduto({ closeModal }) {
         estabelecimento: '',
         
     });
+
+    const inputRefPreco = useRef(null)
+    const inputRefDesc = useRef(null)
+
     useEffect(() => {
 
         fetch('https://api-cotapreco.onrender.com/establishments')
@@ -48,6 +52,9 @@ export default function FormProduto({ closeModal }) {
             alert('Erro, verifique o log');
         }
     };
+    const handleChangePrice = (text) => { // Substituir vírgula por ponto 
+        const formattedText = text.replace(',', '.'); 
+        setFormData({ ...formData, preco: formattedText }); };
 
     return (
         <View style={styles.container}>
@@ -58,18 +65,24 @@ export default function FormProduto({ closeModal }) {
                 placeholder="Nome do Produto"
                 value={formData.nome}
                 onChangeText={(text) => setFormData({ ...formData, nome: text })}
+                returnKeyType='next'
+                onSubmitEditing={() => inputRefPreco.current?.focus()}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Preço"
                 value={formData.preco}
-                onChangeText={(text) => setFormData({ ...formData, preco: text })}
+                onChangeText={handleChangePrice }
+                ref={inputRefPreco}
+                returnKeyType='next'
+                onSubmitEditing={() => inputRefDesc.current?.focus()}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Descrição"
                 value={formData.descricao}
                 onChangeText={(text) => setFormData({ ...formData, descricao: text })}
+                ref={inputRefDesc}
             />
             <View style={styles.containerDropdown}>
                 <Dropdown
