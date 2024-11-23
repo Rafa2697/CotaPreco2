@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Pressable, ActivityIndicator } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { KeyboardAvoidingView } from 'react-native';
 
 export default function Login() {
@@ -89,7 +89,10 @@ export default function Login() {
 
                 {/* <PasswordInput onChangeText={setSenha} value={senha} placeholder='Senha' /> */}
 
+                <Link href='/(aluno)/primeiro_acesso'>
                 <Text style={{ textAlign: 'right', color: 'blue' }} >Primeiro acesso ?</Text>
+                </Link>
+                
             </KeyboardAvoidingView>
 
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
